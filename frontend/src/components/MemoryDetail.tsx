@@ -48,12 +48,20 @@ export const MemoryDetail: React.FC<MemoryDetailProps> = ({ memoryId, thumbnailB
     }
   };
 
-  const openFile = () => {
-    if (data?.path) {
-      // Attempt file:// protocol
-      window.open(`file://${data.path}`, '_blank');
-    }
-  };
+  const openFile = async () => {
+  if (!data?.path) return;
+
+  try {
+    await fetch("http://localhost:8000/open-file", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: data.path }),
+    });
+  } catch (err) {
+    console.error("Failed to open file:", err);
+  }
+};
+
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm" onClick={onClose}>
